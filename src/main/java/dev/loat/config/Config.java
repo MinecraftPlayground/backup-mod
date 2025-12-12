@@ -34,7 +34,7 @@ public final class Config {
 
             return config.parse();
         } catch (Exception exception) {
-            Logger.error("Error while loading the config file: {}", exception);
+            Logger.error("Error while loading the config file: %s".formatted(exception));
             try {
                 return configFileClass.getDeclaredConstructor().newInstance();
             } catch (
@@ -59,7 +59,7 @@ public final class Config {
         try {
             Files.createDirectories(dir);
         } catch (IOException e) {
-            Logger.error("Could not create config directory: {}", e);
+            Logger.error("Could not create config directory: %s".formatted(e));
         }
 
         return dir.resolve(configFile);

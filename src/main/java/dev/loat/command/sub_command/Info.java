@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 
 public final class Info {
     public static final String COMMAND = "info";
+    public static final String ARGUMENT = "name";
 
     public static int execute(CommandContext<CommandSourceStack> context) {
         context.getSource().sendSuccess(() -> Component.literal("/backup info"), false);
