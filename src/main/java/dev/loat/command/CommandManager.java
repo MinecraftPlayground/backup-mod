@@ -32,11 +32,9 @@ public class CommandManager {
                 .then(Commands.literal(Abort.COMMAND).executes(Abort::execute))
                 .then(Commands.literal(List.COMMAND).executes(List::execute))
                 .then(Commands.literal(Info.COMMAND)
-                    .then(Commands.argument(Info.ARGUMENT, StringArgumentType.string()).suggests(new BackupFiles()).executes(Restore::execute))
+                    .then(Commands.argument(Info.ARGUMENT, StringArgumentType.string()).suggests(new BackupFiles()).executes(Info::execute))
                 )
                 .then(Commands.literal(Cleanup.COMMAND).executes(Cleanup::execute))
         ));
     }
 }
-
-

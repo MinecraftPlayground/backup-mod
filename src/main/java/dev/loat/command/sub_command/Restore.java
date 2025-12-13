@@ -29,7 +29,7 @@ public final class Restore extends Command {
 
         Logger.info("Restoring existing backup \"%s\"".formatted(name));
 
-        context.getSource().sendSuccess(() -> Component.literal("/backup create \"%s\"".formatted(name)), false);
+        context.getSource().sendSuccess(() -> Component.literal("/backup restore \"%s\"".formatted(name)), false);
         return 1;
     }
 }

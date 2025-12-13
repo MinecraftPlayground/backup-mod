@@ -16,13 +16,14 @@ public final class Create extends Command {
     @SuppressWarnings("null")
     public static int execute(CommandContext<CommandSourceStack> context) {
         String comment;
+        String playerName = context.getSource().getPlayer().getName().getString();
 
         if(Create.hasArgument(context, Create.ARGUMENT)) {
             comment = StringArgumentType.getString(context, Create.ARGUMENT);
-            Logger.info("Creating new backup with comment \"%s\"".formatted(comment));
+            Logger.info("[%s] Creating new backup with comment \"%s\"".formatted(playerName, comment));
         } else {
             comment = "";
-            Logger.info("Creating new backup");
+            Logger.info("[%s] Creating new backup".formatted(playerName));
         }
 
         context.getSource().sendSuccess(() -> Component.literal("/backup create \"%s\"".formatted(comment)), false);
