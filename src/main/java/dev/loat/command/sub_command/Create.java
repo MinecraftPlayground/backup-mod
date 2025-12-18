@@ -26,7 +26,7 @@ public final class Create extends Command {
             Logger.info("[%s] Creating new backup".formatted(playerName));
         }
 
-        context.getSource().sendSuccess(() -> Component.literal("/backup create \"%s\"".formatted(comment)), false);
+        Create.sendSuccess(context, () -> Component.literal("/backup create \"%s\"".formatted(comment)));
         return 1;
     }
 }

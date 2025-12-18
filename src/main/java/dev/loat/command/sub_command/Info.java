@@ -3,12 +3,13 @@ package dev.loat.command.sub_command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
+import dev.loat.command.Command;
 import dev.loat.logging.Logger;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 
 
-public final class Info {
+public final class Info extends Command {
     public static final String COMMAND = "info";
     public static final String ARGUMENT = "name";
 
@@ -18,7 +19,7 @@ public final class Info {
 
         Logger.info("Getting info about existing backup \"%s\"".formatted(name));
         
-        context.getSource().sendSuccess(() -> Component.literal("/backup info \"%s\"".formatted(name)), false);
+        Info.sendSuccess(context, () -> Component.literal("/backup info \"%s\"".formatted(name)));
         return 1;
     }
 }

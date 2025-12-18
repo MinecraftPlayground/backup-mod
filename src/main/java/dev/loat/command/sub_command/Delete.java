@@ -3,12 +3,13 @@ package dev.loat.command.sub_command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
+import dev.loat.command.Command;
 import dev.loat.logging.Logger;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 
 
-public final class Delete {
+public final class Delete extends Command {
     public static final String COMMAND = "delete";
     public static final String ARGUMENT = "name";
 
@@ -19,7 +20,7 @@ public final class Delete {
         
         Logger.info("Deleting existing backup \"%s\"".formatted(name));
         
-        context.getSource().sendSuccess(() -> Component.literal("/backup delete \"%s\"".formatted(name)), false);
+        Delete.sendSuccess(context, () -> Component.literal("/backup delete \"%s\"".formatted(name)));
         return 1;
     }
 }
