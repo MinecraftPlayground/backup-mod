@@ -1,12 +1,13 @@
 package dev.loat.config.parser;
 
-import dev.loat.config.parser.annotation.Comment;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
+
+import dev.loat.config.annotation.Comment;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;

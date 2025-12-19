@@ -1,4 +1,4 @@
-package dev.loat.config.parser.annotation;
+package dev.loat.config.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
