@@ -12,7 +12,9 @@ public final class List extends Command {
     public static final String COMMAND = "list";
     
     public static int execute(CommandContext<CommandSourceStack> context) {
-        Logger.info("Listing all backups");
+        String playerName = context.getSource().getTextName();
+
+        Logger.info("[%s] Listing all backups".formatted(playerName));
         
         List.sendSuccess(context, () -> Component.literal("/backup list"));
         return 1;

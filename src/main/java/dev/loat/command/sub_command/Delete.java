@@ -16,9 +16,10 @@ public final class Delete extends Command {
 
     @SuppressWarnings("null")
     public static int execute(CommandContext<CommandSourceStack> context) {
+        String playerName = context.getSource().getTextName();
         String name = StringArgumentType.getString(context, Restore.ARGUMENT);
         
-        Logger.info("Deleting existing backup \"%s\"".formatted(name));
+        Logger.info("[%s] Deleting existing backup \"%s\"".formatted(playerName, name));
         
         Delete.sendSuccess(context, () -> Component.literal("/backup delete \"%s\"".formatted(name)));
         return 1;

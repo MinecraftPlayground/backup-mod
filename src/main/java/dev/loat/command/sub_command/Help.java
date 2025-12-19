@@ -12,7 +12,9 @@ public final class Help extends Command {
     public static final String COMMAND = "help";
     
     public static int execute(CommandContext<CommandSourceStack> context) {
-        Logger.info("Getting help");
+        String playerName = context.getSource().getTextName();
+
+        Logger.info("[%s] Getting help".formatted(playerName));
         
         Help.sendSuccess(context, () -> Component.literal("/backup help"));
         return 1;

@@ -12,7 +12,9 @@ public final class Cleanup extends Command {
     public static final String COMMAND = "cleanup";
 
     public static int execute(CommandContext<CommandSourceStack> context) {
-        Logger.info("Running cleanup process");
+        String playerName = context.getSource().getTextName();
+        
+        Logger.info("[%s] Running cleanup process".formatted(playerName));
 
         Cleanup.sendSuccess(context, () -> Component.literal("/backup cleanup"));
 

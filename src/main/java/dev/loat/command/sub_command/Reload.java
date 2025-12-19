@@ -13,7 +13,9 @@ public final class Reload extends Command {
     public static final String COMMAND = "reload";
 
     public static int execute(CommandContext<CommandSourceStack> context) {
-        Logger.info("Reloading config");
+        String playerName = context.getSource().getTextName();
+
+        Logger.info("[%s] Reloading config".formatted(playerName));
 
         ConfigManager.loadAll();
        

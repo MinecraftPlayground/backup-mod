@@ -15,9 +15,10 @@ public final class Info extends Command {
 
     @SuppressWarnings("null")
     public static int execute(CommandContext<CommandSourceStack> context) {
+        String playerName = context.getSource().getTextName();
         String name = StringArgumentType.getString(context, Info.ARGUMENT);
 
-        Logger.info("Getting info about existing backup \"%s\"".formatted(name));
+        Logger.info("[%s] Getting info about existing backup \"%s\"".formatted(playerName, name));
         
         Info.sendSuccess(context, () -> Component.literal("/backup info \"%s\"".formatted(name)));
         return 1;

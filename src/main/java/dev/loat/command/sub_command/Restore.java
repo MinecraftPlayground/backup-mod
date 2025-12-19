@@ -19,6 +19,7 @@ public final class Restore extends Command {
 
     @SuppressWarnings("null")
     public static int execute(CommandContext<CommandSourceStack> context) {
+        String playerName = context.getSource().getTextName();
         String name;
         
         if(Create.hasArgument(context, Restore.ARGUMENT)) {
@@ -27,7 +28,7 @@ public final class Restore extends Command {
             name = Restore.Argument.LATEST;
         }
 
-        Logger.info("Restoring existing backup \"%s\"".formatted(name));
+        Logger.info("[%s] Restoring existing backup \"%s\"".formatted(playerName, name));
 
         Restore.sendSuccess(context, () -> Component.literal("/backup restore \"%s\"".formatted(name)));
         return 1;

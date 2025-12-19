@@ -15,8 +15,8 @@ public final class Create extends Command {
 
     @SuppressWarnings("null")
     public static int execute(CommandContext<CommandSourceStack> context) {
+        String playerName = context.getSource().getTextName();
         String comment;
-        String playerName = context.getSource().getPlayer().getName().getString();
 
         if(Create.hasArgument(context, Create.ARGUMENT)) {
             comment = StringArgumentType.getString(context, Create.ARGUMENT);
