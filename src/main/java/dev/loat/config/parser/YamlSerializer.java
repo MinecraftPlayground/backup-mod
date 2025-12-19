@@ -9,6 +9,7 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import dev.loat.config.annotation.Comment;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
@@ -36,9 +37,9 @@ public class YamlSerializer<ConfigClass> {
      * Serializes a configuration object to a YAML file with comments.
      *
      * @param config The configuration object to serialize.
-     * @throws Exception If an error occurs while writing the file.
+     * @throws IOException If an error occurs while writing the file.
      */
-    public void serialize(ConfigClass config) throws Exception {
+    public void serialize(ConfigClass config) throws IOException {
         Path path = Paths.get(filePath);
         if (!Files.exists(path)) {
             Files.createDirectories(path.getParent());
@@ -95,9 +96,9 @@ public class YamlSerializer<ConfigClass> {
      * Parses a YAML file and returns a configuration object.
      *
      * @return The configuration object reflecting the YAML file structure.
-     * @throws Exception If an error occurs while reading the file or casting.
+     * @throws IOException If an error occurs while reading the file or casting.
      */
-    public ConfigClass parse() throws Exception {
+    public ConfigClass parse() throws IOException {
         Path path = Paths.get(filePath);
         if (!Files.exists(path)) {
             Files.createDirectories(path.getParent());

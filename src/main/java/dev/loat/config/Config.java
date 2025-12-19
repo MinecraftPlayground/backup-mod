@@ -2,24 +2,23 @@ package dev.loat.config;
 
 import dev.loat.config.parser.YamlSerializer;
 import dev.loat.logging.Logger;
-import net.fabricmc.loader.api.FabricLoader;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 
-public final class Config {
-    private static final String rootDirectory = "backup";
+public class Config<ConfigFile> {
+    private final Class<ConfigFile> configFileClass;
+    private final YamlSerializer<ConfigFile> serializer;
+    @SuppressWarnings("null")
+    private ConfigFile config = null;
 
-    public static <ConfigFile> ConfigFile load(
-        @NotNull Path path,
+    public Config(
+        Path path,
         Class<ConfigFile> configFileClass
     ) {
-        var config = new YamlSerializer<>(
+        this.configFileClass = configFileClass;
+        this.serializer = new YamlSerializer<>(
             path.toString(),
             configFileClass
         );
@@ -29,39 +28,33 @@ public final class Config {
 
             // Check if the config file exists, if not create it
             if(!file.exists()) {
-                config.serialize(configFileClass.getDeclaredConstructor().newInstance());
+                this.serializer.serialize(configFileClass.getDeclaredConstructor().newInstance());
             }
 
-            return config.parse();
-        } catch (Exception exception) {
-            Logger.error("Error while loading the config file: %s".formatted(exception));
-            try {
-                return configFileClass.getDeclaredConstructor().newInstance();
-            } catch (
-                InstantiationException |
-                IllegalAccessException |
-                InvocationTargetException |
-                NoSuchMethodException e
-            ) {
-                throw new RuntimeException(e);
-            }
+            this.load();
+        } catch (Exception serializeException) {
+            Logger.error("Error while serializing the config file:\n%s".formatted(serializeException));
         }
     }
 
-    public static @NotNull Path resolve(String configFile) {
-        return resolve(Path.of(configFile));
-    }
-    public static @NotNull Path resolve(Path configFile) {
-        Path dir = FabricLoader.getInstance()
-            .getConfigDir()
-            .resolve(Config.rootDirectory);
-
+    @SuppressWarnings("null")
+    public void load() {
         try {
-            Files.createDirectories(dir);
-        } catch (IOException e) {
-            Logger.error("Could not create config directory: %s".formatted(e));
-        }
+            this.config = this.serializer.parse();
+        } catch (Exception parseException) {
+            Logger.error("Error while parsing the config file:\n%s".formatted(parseException));
 
-        return dir.resolve(configFile);
+            try {
+                this.config = this.configFileClass.getDeclaredConstructor().newInstance();
+            } catch (Exception newInstanceException) {
+                Logger.error("Error while creating a new instance of the config class:\n%s".formatted(newInstanceException));
+
+                this.config = null;
+            }
+        }
+    }
+
+    public ConfigFile get() {
+        return this.config;
     }
 }
