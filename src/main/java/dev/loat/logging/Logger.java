@@ -12,7 +12,7 @@ public class Logger {
     /**
      * This static function is used to set the class for logging.
      *
-     * @param classInstance The instance to use for logging
+     * @param classInstance The instance to use for logging.
      */
     public static void setLoggerClass(Class<? extends ModInitializer> classInstance) {
         Logger.INSTANCE = LoggerFactory.getLogger(classInstance);
@@ -21,7 +21,7 @@ public class Logger {
     /**
      * This static function is used for logging a message at debug level.
      *
-     * @param message The message to log
+     * @param message The message to log.
      */
     public static void debug(String message) {
         Logger.INSTANCE.debug(message);
@@ -30,7 +30,7 @@ public class Logger {
     /**
      * This static function is used for logging a message at info level.
      *
-     * @param message The message to log
+     * @param message The message to log.
      */
     public static void info(String message) {
         Logger.INSTANCE.info(message);
@@ -39,7 +39,7 @@ public class Logger {
     /**
      * This static function is used for logging a message at warning level.
      *
-     * @param message The message to log
+     * @param message The message to log.
      */
     public static void warning(String message) {
         Logger.INSTANCE.warn(message);
@@ -48,7 +48,7 @@ public class Logger {
     /**
      * This static function is used for logging a message at error level.
      *
-     * @param message The message to log
+     * @param message The message to log.
      */
     public static void error(String message) {
         Logger.INSTANCE.error(message);

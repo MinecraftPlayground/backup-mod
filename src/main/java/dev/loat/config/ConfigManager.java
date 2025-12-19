@@ -13,7 +13,6 @@ import net.fabricmc.loader.api.FabricLoader;
  * Manages configuration files.
  */
 public class ConfigManager {
-    
     public static final String path = "backup";
     private static final Map<Class<?>, Config<?>> configs = new HashMap<>();
 

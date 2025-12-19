@@ -8,7 +8,15 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.loat.command.sub_command.*;
 import dev.loat.command.suggestion_provider.BackupFiles;
 
+/**
+ * Manages commands.
+ */
 public class CommandManager {
+    /**
+     * Registers all commands.
+     * 
+     * @implNote This method is called by fabric during the initialization process.
+     */
     @SuppressWarnings("null")
     public static void register() {
         CommandRegistrationCallback.EVENT.register((
