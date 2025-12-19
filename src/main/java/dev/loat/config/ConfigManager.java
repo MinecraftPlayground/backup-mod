@@ -3,22 +3,27 @@ package dev.loat.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
-import dev.loat.config.files.BackupConfigFile;
 import dev.loat.logging.Logger;
 import net.fabricmc.loader.api.FabricLoader;
-
 
 public class ConfigManager {
     
     public static final String path = "backup";
+    private static final Map<Class<?>, Config<?>> configs = new HashMap<>();
 
-    @SuppressWarnings("null")
-    public static final Config<BackupConfigFile> CONFIG = new Config<>(
-        ConfigManager.resolve("config.yml"),
-        BackupConfigFile.class
-    );
+    public static <ConfigFile> void addConfig(
+        Config<ConfigFile> config
+    ) {
+        configs.put(config.getConfigFileClass(), config);
+    }
 
+    @SuppressWarnings("unchecked")
+    public static <ConfigFile> Config<ConfigFile> getConfig(Class<ConfigFile> type) {
+        return (Config<ConfigFile>) configs.get(type);
+    }
         
     public static Path resolve(String configFile) {
         return ConfigManager.resolve(Path.of(configFile));
@@ -39,6 +44,6 @@ public class ConfigManager {
     }
 
     public static void loadAll() {
-        CONFIG.load();
+        ConfigManager.configs.values().forEach(Config::load);
     }
 }

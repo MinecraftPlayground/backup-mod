@@ -37,6 +37,10 @@ public class Config<ConfigFile> {
         }
     }
 
+    Class<ConfigFile> getConfigFileClass() {
+        return this.configFileClass;
+    }
+
     @SuppressWarnings("null")
     public void load() {
         try {

@@ -8,19 +8,24 @@ import dev.loat.command.CommandManager;
 import dev.loat.config.Config;
 import dev.loat.config.ConfigManager;
 import dev.loat.config.files.BackupConfigFile;
+import dev.loat.config.files.BackupTextsFile;
 
 
 public class Backup implements ModInitializer {
-
-  
-    private static Config<BackupConfigFile> config;
-
-    @SuppressWarnings("null")
     @Override
     public void onInitialize() {
         Logger.setLoggerClass(Backup.class);
 
-        Backup.config = ConfigManager.CONFIG;
+        ConfigManager.addConfig(new Config<>(
+            ConfigManager.resolve("config.yml"),
+            BackupConfigFile.class
+        ));
+
+        ConfigManager.addConfig(new Config<>(
+            ConfigManager.resolve("texts.yml"),
+            BackupTextsFile.class
+        ));
+
         CommandManager.register();
 
         Logger.info("Backup loaded.");
