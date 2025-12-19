@@ -28,6 +28,6 @@ public class Backup implements ModInitializer {
 
         CommandManager.register();
 
-        Logger.info("Backup loaded.");
+        Logger.info("Backup initialized.");
     }
 }
