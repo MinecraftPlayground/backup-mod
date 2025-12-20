@@ -13,8 +13,9 @@ import net.fabricmc.loader.api.FabricLoader;
  * Manages configuration files.
  */
 public class ConfigManager {
-    public static final String path = "backup";
     private static final Map<Class<?>, Config<?>> configs = new HashMap<>();
+
+    public static final String rootDirectory = "backup";
 
     /**
      * Adds a config to the manager.
@@ -62,7 +63,7 @@ public class ConfigManager {
         Path configFilePath = FabricLoader
             .getInstance()
             .getConfigDir()
-            .resolve(ConfigManager.path);
+            .resolve(ConfigManager.rootDirectory);
 
         try {
             Files.createDirectories(configFilePath);
