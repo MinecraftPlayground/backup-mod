@@ -7,6 +7,7 @@ import net.minecraft.network.chat.TextColor;
 public final class BackupTextsFile {
     @Comment("/backup help")
     public Component commandHelp = Component.empty()
+        .append(Component.literal("Backup command help:\\n"))
         .append(Component.literal("/backup help "))
         .append(Component.literal("Displays this help message.")
             .withStyle(style -> style
