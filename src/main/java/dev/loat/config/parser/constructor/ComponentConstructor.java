@@ -47,10 +47,10 @@ public class ComponentConstructor extends Constructor {
      */
     private Component constructComponent(Node node) {
         JsonElement json = nodeToJson(node);
-
+        
         return ComponentSerialization.CODEC
             .decode(JsonOps.INSTANCE, json)
-            .getOrThrow(err -> new IllegalStateException("Failed to decode Component: " + err))
+            .getOrThrow(error -> new IllegalStateException("Failed to decode Component:\n%s".formatted(error)))
             .getFirst();
     }
 
