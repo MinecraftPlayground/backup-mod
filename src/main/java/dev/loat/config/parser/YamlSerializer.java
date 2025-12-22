@@ -8,6 +8,8 @@ import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 import dev.loat.config.annotation.Comment;
+import dev.loat.config.parser.constructor.ComponentConstructor;
+import dev.loat.config.parser.representer.ComponentRepresenter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,21 +49,22 @@ public class YamlSerializer<ConfigClass> {
         }
 
         DumperOptions options = new DumperOptions();
-        options.setIndent(2);
-        options.setPrettyFlow(true);
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        options.setPrettyFlow(true);
+        options.setIndent(2);
 
-        Representer representer = new Representer(options);
-        representer.addClassTag(configClass, Tag.MAP);
+        Representer representer = new ComponentRepresenter(options);
+        representer.addClassTag(this.configClass, Tag.MAP);
 
         Yaml yaml = new Yaml(representer, options);
 
         String yamlString = yaml.dump(config);
         String[] lines = yamlString.split("\n");
 
-        Field[] fields = configClass.getDeclaredFields();
+        Field[] fields = this.configClass.getDeclaredFields();
         Map<String, List<String>> commentsMap = new HashMap<>();
         for (Field field : fields) {
+            @SuppressWarnings("null")
             Comment comment = field.getAnnotation(Comment.class);
             if (comment != null) {
                 String[] commentLines = comment.value().split("\n");
@@ -109,13 +112,18 @@ public class YamlSerializer<ConfigClass> {
         try (InputStream inputStream = Files.newInputStream(path)) {
             LoaderOptions loaderOptions = new LoaderOptions();
             loaderOptions.setAllowDuplicateKeys(false);
-            Constructor constructor = new Constructor(configClass, loaderOptions);
-            Yaml yaml = new Yaml(constructor);
+
+            Constructor componentConstructor = new ComponentConstructor(this.configClass, loaderOptions);
+
+            Yaml yaml = new Yaml(componentConstructor);
+
             Object result = yaml.load(inputStream);
+
             if (result == null) {
                 throw new IllegalStateException("No data found in YAML file: " + filePath);
             }
-            return configClass.cast(result);
+
+            return this.configClass.cast(result);
         }
     }
 }

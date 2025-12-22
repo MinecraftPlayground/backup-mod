@@ -1,20 +1,36 @@
 package dev.loat.config.files;
 
 import dev.loat.config.annotation.Comment;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 
 public final class BackupTextsFile {
     @Comment("/backup help")
-    public String commandHelp = """
-    /backup help Displays this help message.
-    /backup reload Reloads the backup configuration and texts.
-    /backup create [<comment>] Creates a new backup.
-    /backup restore (latest|<name>) Restores an existing backup.
-    /backup delete <name> Deletes an existing backup.
-    /backup list Lists all existing backups.
-    /backup info <name> Displays information about an existing backup.
-    /backup cleanup Cleans up old backups based on the configuration.
-    """;
+    public Component commandHelp = Component.empty()
+        .append(Component.literal("/backup help"))
+        .append(Component.literal("Displays this help message.").withStyle(ChatFormatting.ITALIC))
+        .append(Component.literal("\\n"))
+        .append(Component.literal("/backup reload"))
+        .append(Component.literal("Reloads the backup configuration and texts.").withStyle(ChatFormatting.ITALIC))
+        .append(Component.literal("\\n"))
+        .append(Component.literal("/backup create [<comment>]"))
+        .append(Component.literal("Creates a new backup.").withStyle(ChatFormatting.ITALIC))
+        .append(Component.literal("\\n"))
+        .append(Component.literal("/backup restore (latest|<name>)"))
+        .append(Component.literal("Restores an existing backup.").withStyle(ChatFormatting.ITALIC))
+        .append(Component.literal("\\n"))
+        .append(Component.literal("/backup delete <name>"))
+        .append(Component.literal("Deletes an existing backup.").withStyle(ChatFormatting.ITALIC))
+        .append(Component.literal("\\n"))
+        .append(Component.literal("/backup list"))
+        .append(Component.literal("Lists all existing backups.").withStyle(ChatFormatting.ITALIC))
+        .append(Component.literal("\\n"))
+        .append(Component.literal("/backup info <name>"))
+        .append(Component.literal("Displays information about an existing backup.").withStyle(ChatFormatting.ITALIC))
+        .append(Component.literal("\\n"))
+        .append(Component.literal("/backup cleanup"))
+        .append(Component.literal("Cleans up old backups based on the configuration.").withStyle(ChatFormatting.ITALIC));
 
     @Comment("/backup reload")
-    public String commandReload = "Config reloaded successfully.";
+    public Component commandReload = Component.literal("Config reloaded successfully.");
 }

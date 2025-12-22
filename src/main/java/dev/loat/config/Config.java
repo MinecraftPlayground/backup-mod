@@ -12,6 +12,7 @@ import java.nio.file.Path;
  * @param <ConfigFile> The config file type
  */
 public class Config<ConfigFile> {
+    private Path path;
     private final Class<ConfigFile> configFileClass;
     private final YamlSerializer<ConfigFile> serializer;
     @SuppressWarnings("null")
@@ -27,6 +28,7 @@ public class Config<ConfigFile> {
         Path path,
         Class<ConfigFile> configFileClass
     ) {
+        this.path = path;
         this.configFileClass = configFileClass;
         this.serializer = new YamlSerializer<>(
             path.toString(),
@@ -43,7 +45,7 @@ public class Config<ConfigFile> {
 
             this.load();
         } catch (Exception serializeException) {
-            Logger.error("Error while serializing the config file:\n%s".formatted(serializeException));
+            Logger.error("Error while serializing the config file (%s):\n%s".formatted(this.path.toString(), serializeException));
         }
     }
 
@@ -73,7 +75,7 @@ public class Config<ConfigFile> {
         try {
             this.config = this.serializer.parse();
         } catch (Exception parseException) {
-            Logger.error("Error while parsing the config file:\n%s".formatted(parseException));
+            Logger.error("Error while parsing the config file (%s):\n%s".formatted(this.path.toString(), parseException));
 
             try {
                 this.config = this.configFileClass.getDeclaredConstructor().newInstance();

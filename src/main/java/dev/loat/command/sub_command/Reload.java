@@ -7,7 +7,6 @@ import dev.loat.config.ConfigManager;
 import dev.loat.config.files.BackupTextsFile;
 import dev.loat.logging.Logger;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Component;
 
 
 public final class Reload extends Command {
@@ -19,10 +18,10 @@ public final class Reload extends Command {
 
         Logger.info("[%s] Reloading config".formatted(playerName));
         
-        String TextCommandReload = ConfigManager.getConfig(BackupTextsFile.class).get().commandReload;
+        var textCommandReload = ConfigManager.getConfig(BackupTextsFile.class).get().commandReload;
         ConfigManager.loadAll();
        
-        Reload.sendSuccess(context, () -> Component.literal(TextCommandReload));
+        Reload.sendSuccess(context, () -> textCommandReload);
         return 1;
     }
 }

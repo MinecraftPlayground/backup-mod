@@ -7,7 +7,7 @@ import dev.loat.config.ConfigManager;
 import dev.loat.config.files.BackupTextsFile;
 import dev.loat.logging.Logger;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Component;
+// import net.minecraft.network.chat.Component;
 
 
 public final class Help extends Command {
@@ -19,9 +19,9 @@ public final class Help extends Command {
 
         Logger.info("[%s] Getting help".formatted(playerName));
 
-        String TextCommandHelp = ConfigManager.getConfig(BackupTextsFile.class).get().commandHelp;
-
-        Help.sendSuccess(context, () -> Component.literal(TextCommandHelp));
+        var textCommandHelp = ConfigManager.getConfig(BackupTextsFile.class).get().commandHelp;
+        
+        Help.sendSuccess(context, () -> textCommandHelp);
         return 1;
     }
 }
