@@ -17,16 +17,16 @@ public class ComponentRepresenter extends Representer {
     /**
      * Constructs a new component representer for serializing components (components -> YAML).
      * 
-     * @param configFileClass The configuration class to associate with this representer.
+     * @param configClass The configuration class to associate with this representer.
      * @param options The DumperOptions to use.
      */
     public ComponentRepresenter(
-        Class<?> configFileClass,
+        Class<?> configClass,
         DumperOptions options
     ) {
         super(options);
 
-        this.addClassTag(configFileClass, Tag.MAP);
+        this.addClassTag(configClass, Tag.MAP);
 
         this.representers.put(Component.class, (data) -> this.representComponent((Component) data));
         this.representers.put(MutableComponent.class, (data) -> this.representComponent((Component) data));
