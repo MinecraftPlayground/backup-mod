@@ -4,7 +4,6 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 import dev.loat.config.annotation.Comment;
@@ -53,10 +52,9 @@ public class YamlSerializer<ConfigClass> {
         options.setPrettyFlow(true);
         options.setIndent(2);
 
-        Representer representer = new ComponentRepresenter(options);
-        representer.addClassTag(this.configClass, Tag.MAP);
+        Representer componentRepresenter = new ComponentRepresenter(this.configClass, options);
 
-        Yaml yaml = new Yaml(representer, options);
+        Yaml yaml = new Yaml(componentRepresenter, options);
 
         String yamlString = yaml.dump(config);
         String[] lines = yamlString.split("\n");

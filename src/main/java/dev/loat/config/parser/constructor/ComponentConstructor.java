@@ -1,129 +1,82 @@
 package dev.loat.config.parser.constructor;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.JsonOps;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.nodes.NodeId;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
-
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.yaml.snakeyaml.nodes.SequenceNode;
+import org.yaml.snakeyaml.nodes.Tag;
 
 public class ComponentConstructor extends Constructor {
 
-    public ComponentConstructor(Class<?> rootClass, LoaderOptions loaderOptions) {
-        super(rootClass, loaderOptions);
-        this.yamlClassConstructors.put(NodeId.mapping, new ConstructComponentMapping());
-        // Optional: Für Scalar (einfache Strings) direkt Component.literal machen
-        this.yamlClassConstructors.put(NodeId.scalar, new ConstructScalarComponent());
-    }
-
-    private class ConstructComponentMapping extends ConstructMapping {
-
-        @SuppressWarnings("null")
-        @Override
-        protected Object constructJavaBean2ndStep(MappingNode node, Object object) {
-            for (NodeTuple tuple : node.getValue()) {
-                Node keyNode = tuple.getKeyNode();
-                Node valueNode = tuple.getValueNode();
-
-                if (keyNode instanceof ScalarNode keyScalar) {
-                    String propertyName = constructScalar(keyScalar).toString();
-
-                    if (isComponentField(propertyName)) {
-                        Component component = null;
-
-                        if (valueNode instanceof MappingNode mapping) {
-                            // Normaler Component mit Feldern (text, extra, color, ...)
-                            Map<String, Object> map = constructMapping(mapping)
-                                .entrySet().stream()
-                                .collect(Collectors.toMap(
-                                    e -> String.valueOf(e.getKey()),   // Schlüssel immer String
-                                    Map.Entry::getValue
-                                ));
-                            JsonObject json = mapToJsonObject(map);
-                            component = ComponentSerialization.CODEC
-                                    .parse(JsonOps.INSTANCE, json)
-                                    .getOrThrow(err -> new IllegalStateException("Failed to decode Component: " + err));
-
-                        } else if (valueNode instanceof ScalarNode scalar) {
-                            // Einfacher String → Component.literal
-                            String text = constructScalar(scalar).toString();
-                            // Entferne ggf. umschließende Quotes, die SnakeYAML manchmal hinzufügt
-                            text = text.replaceAll("^\"|\"$", "");
-                            component = Component.literal(text);
-                        }
-
-                        if (component != null) {
-                            try {
-                                java.lang.reflect.Field field = object.getClass().getDeclaredField(propertyName);
-                                field.setAccessible(true);
-                                field.set(object, component);
-                            } catch (Exception e) {
-                                throw new RuntimeException("Failed to set field: " + propertyName, e);
-                            }
-                            continue; // Standard-Zuweisung überspringen
-                        }
-                    }
-                }
-            }
-
-            return super.constructJavaBean2ndStep(node, object);
-        }
-    }
-
     /**
-     * Für reine Scalar-Werte im YAML, die direkt als Component interpretiert werden sollen
+     * Constructs a new component constructor for parsing components (YAML -> components).
      */
-    private class ConstructScalarComponent extends ConstructScalar {
+    public ComponentConstructor(
+        Class<?> configFileClass,
+        LoaderOptions options
+    ) {
+        super(configFileClass, options);
+    }
 
-        @SuppressWarnings("null")
-        @Override
-        public Object construct(Node node) {
-            String value = constructScalar((ScalarNode) node).toString();
-            return Component.literal(value);
+    @Override
+    protected Object constructObject(Node node) {
+        if (Component.class.isAssignableFrom(node.getType())) {
+            return this.constructComponent(node);
         }
+        return super.constructObject(node);
     }
 
-    private boolean isComponentField(String name) {
-        return "commandHelp".equals(name) || "commandReload".equals(name);
-        // Füge weitere Felder hinzu, wenn nötig
+    private Component constructComponent(Node node) {
+        JsonElement json = nodeToJson(node);
+        return ComponentSerialization.CODEC
+            .decode(JsonOps.INSTANCE, json)
+            .getOrThrow(err -> new IllegalStateException("Failed to decode Component: " + err))
+            .getFirst();
     }
 
-    private JsonObject mapToJsonObject(Map<?, ?> map) {
-        JsonObject obj = new JsonObject();
-        for (Map.Entry<?, ?> entry : map.entrySet()) {
-            String key = String.valueOf(entry.getKey());
-            Object value = entry.getValue();
-
+    private JsonElement nodeToJson(Node node) {
+        if (node instanceof ScalarNode scalar) {
+            Object value = constructScalar(scalar);
             if (value == null) {
-                obj.add(key, JsonNull.INSTANCE);
-            } else if (value instanceof Map) {
-                obj.add(key, mapToJsonObject((Map<?, ?>) value));
-            } else if (value instanceof Iterable<?> list) {
-                com.google.gson.JsonArray array = new com.google.gson.JsonArray();
-                for (Object item : list) {
-                    if (item instanceof Map) {
-                        array.add(mapToJsonObject((Map<?, ?>) item));
-                    } else if (item instanceof String) {
-                        array.add((Boolean) item);
-                    } else {
-                        array.add(JsonParser.parseString(String.valueOf(item)));
-                    }
-                }
-                obj.add(key, array);
+                return JsonNull.INSTANCE;
+            } else if (node.getTag().equals(Tag.BOOL)) {
+                return new JsonPrimitive(Boolean.parseBoolean(value.toString()));
+            } else if (node.getTag().equals(Tag.INT)) {
+                return new JsonPrimitive(Integer.parseInt(value.toString()));
+            } else if (node.getTag().equals(Tag.FLOAT)) {
+                return new JsonPrimitive(Double.parseDouble(value.toString()));
             } else {
-                obj.add(key, JsonParser.parseString(String.valueOf(value)));
+                return new JsonPrimitive(value.toString());
             }
+        } else if (node instanceof SequenceNode sequence) {
+            JsonArray array = new JsonArray();
+            for (Node child : sequence.getValue()) {
+                array.add(nodeToJson(child));
+            }
+            return array;
+        } else if (node instanceof MappingNode mapping) {
+            JsonObject object = new JsonObject();
+            for (NodeTuple tuple : mapping.getValue()) {
+                ScalarNode keyNode = (ScalarNode) tuple.getKeyNode();
+                String key = constructScalar(keyNode);
+                JsonElement value = nodeToJson(tuple.getValueNode());
+                object.add(key, value);
+            }
+            return object;
         }
-        return obj;
+        throw new IllegalArgumentException("Unexpected node type: " + node.getClass().getName());
     }
 }
