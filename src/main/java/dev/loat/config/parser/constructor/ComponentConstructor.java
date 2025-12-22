@@ -25,10 +25,10 @@ public class ComponentConstructor extends Constructor {
      * Constructs a new component constructor for parsing components (YAML -> components).
      */
     public ComponentConstructor(
-        Class<?> configFileClass,
+        Class<?> configClass,
         LoaderOptions options
     ) {
-        super(configFileClass, options);
+        super(configClass, options);
     }
 
     @Override
