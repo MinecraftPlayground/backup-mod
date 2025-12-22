@@ -39,14 +39,30 @@ public class ComponentConstructor extends Constructor {
         return super.constructObject(node);
     }
 
+    /**
+     * Constructs a component from a YAML node.
+     * 
+     * @param node The YAML node to construct the component from.
+     * @return The constructed component.
+     */
     private Component constructComponent(Node node) {
         JsonElement json = nodeToJson(node);
+
         return ComponentSerialization.CODEC
             .decode(JsonOps.INSTANCE, json)
             .getOrThrow(err -> new IllegalStateException("Failed to decode Component: " + err))
             .getFirst();
     }
 
+    /**
+     * Converts a YAML node into a JSON element.
+     * 
+     * This method supports scalar nodes (with tags bool, int, float, and null), sequence nodes, and mapping nodes.
+     * 
+     * @param node The YAML node to convert.
+     * @return The converted JSON element.
+     * @throws IllegalArgumentException If the node type is not supported.
+     */
     private JsonElement nodeToJson(Node node) {
         if (node instanceof ScalarNode scalar) {
             Object value = constructScalar(scalar);
@@ -59,7 +75,7 @@ public class ComponentConstructor extends Constructor {
             } else if (node.getTag().equals(Tag.FLOAT)) {
                 return new JsonPrimitive(Double.parseDouble(value.toString()));
             } else {
-                return new JsonPrimitive(value.toString());
+                return new JsonPrimitive(String.valueOf(value).translateEscapes());
             }
         } else if (node instanceof SequenceNode sequence) {
             JsonArray array = new JsonArray();

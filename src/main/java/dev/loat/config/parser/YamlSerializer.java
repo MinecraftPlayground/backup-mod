@@ -108,10 +108,10 @@ public class YamlSerializer<ConfigClass> {
         }
 
         try (InputStream inputStream = Files.newInputStream(path)) {
-            LoaderOptions loaderOptions = new LoaderOptions();
-            loaderOptions.setAllowDuplicateKeys(false);
+            LoaderOptions options = new LoaderOptions();
+            options.setAllowDuplicateKeys(false);
 
-            Constructor componentConstructor = new ComponentConstructor(this.configClass, loaderOptions);
+            Constructor componentConstructor = new ComponentConstructor(this.configClass, options);
 
             Yaml yaml = new Yaml(componentConstructor);
 
