@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 
-public class YamlSerializer<ConfigClass> {
+public class YamlConfig<ConfigClass> {
     private final String filePath;
     private final Class<ConfigClass> configClass;
 
-    public YamlSerializer(
+    public YamlConfig(
         String filePath,
         Class<ConfigClass> configClass
     ) {

@@ -1,6 +1,6 @@
 package dev.loat.config;
 
-import dev.loat.config.parser.YamlSerializer;
+import dev.loat.config.parser.YamlConfig;
 import dev.loat.logging.Logger;
 
 import java.io.File;
@@ -14,7 +14,7 @@ import java.nio.file.Path;
 public class Config<ConfigFile> {
     private Path path;
     private final Class<ConfigFile> configFileClass;
-    private final YamlSerializer<ConfigFile> serializer;
+    private final YamlConfig<ConfigFile> yamlConfig;
     @SuppressWarnings("null")
     private ConfigFile config = null;
 
@@ -30,7 +30,7 @@ public class Config<ConfigFile> {
     ) {
         this.path = path;
         this.configFileClass = configFileClass;
-        this.serializer = new YamlSerializer<>(
+        this.yamlConfig = new YamlConfig<>(
             path.toString(),
             configFileClass
         );
@@ -48,7 +48,7 @@ public class Config<ConfigFile> {
             File file = path.toFile();
 
             if(!file.exists()) {
-                this.serializer.serialize(configFileClass.getDeclaredConstructor().newInstance());
+                this.yamlConfig.serialize(configFileClass.getDeclaredConstructor().newInstance());
             }
         } catch (Exception serializeException) {
             Logger.error("Error while serializing the config file (%s):\n%s".formatted(this.path.toString(), serializeException));
@@ -79,7 +79,7 @@ public class Config<ConfigFile> {
         this.createIfNotExist();
 
         try {
-            this.config = this.serializer.parse();
+            this.config = this.yamlConfig.parse();
         } catch (Exception parseException) {
             Logger.error("Error while parsing the config file (%s):\n%s".formatted(this.path.toString(), parseException));
 

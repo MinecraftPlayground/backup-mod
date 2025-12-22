@@ -14,9 +14,6 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 
 public class ComponentRepresenter extends Representer {
-    
-    private Class<?> configFileClass;
-
     /**
      * Constructs a new component representer for serializing components (components -> YAML).
      * 
@@ -29,9 +26,7 @@ public class ComponentRepresenter extends Representer {
     ) {
         super(options);
 
-        this.configFileClass = configFileClass;
-
-        this.addClassTag(this.configFileClass, Tag.MAP);
+        this.addClassTag(configFileClass, Tag.MAP);
 
         this.representers.put(Component.class, (data) -> this.representComponent((Component) data));
         this.representers.put(MutableComponent.class, (data) -> this.representComponent((Component) data));
@@ -48,6 +43,6 @@ public class ComponentRepresenter extends Representer {
             .encodeStart(JsonOps.INSTANCE, component)
             .getOrThrow(err -> new IllegalStateException("Failed to encode Component: " + err));
 
-        return this.represent(new Gson().fromJson(json, this.configFileClass));
+        return this.represent(new Gson().fromJson(json, Object.class));
     }
 }
