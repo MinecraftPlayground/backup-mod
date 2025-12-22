@@ -35,20 +35,25 @@ public class Config<ConfigFile> {
             configFileClass
         );
 
+        this.createIfNotExist();
+        this.load();
+    }
+
+    /**
+     * Creates the config file if it does not exist and loads the config.
+     * If an error occurs while serializing the config file, it will be logged.
+     */
+    private void createIfNotExist() {
         try {
             File file = path.toFile();
 
-            // Check if the config file exists, if not create it
             if(!file.exists()) {
                 this.serializer.serialize(configFileClass.getDeclaredConstructor().newInstance());
             }
-
-            this.load();
         } catch (Exception serializeException) {
             Logger.error("Error while serializing the config file (%s):\n%s".formatted(this.path.toString(), serializeException));
         }
     }
-
 
     /**
      * Returns the config file class associated with this config.
@@ -58,7 +63,6 @@ public class Config<ConfigFile> {
     Class<ConfigFile> getConfigFileClass() {
         return this.configFileClass;
     }
-
 
     /**
      * Loads the configuration from the file.
@@ -72,6 +76,8 @@ public class Config<ConfigFile> {
      */
     @SuppressWarnings("null")
     public void load() {
+        this.createIfNotExist();
+
         try {
             this.config = this.serializer.parse();
         } catch (Exception parseException) {
